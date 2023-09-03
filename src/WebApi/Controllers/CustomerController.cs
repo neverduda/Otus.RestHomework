@@ -2,22 +2,48 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models;
+using WebApi.Services;
 
 namespace WebApi.Controllers
 {
     [Route("customers")]
     public class CustomerController : Controller
     {
-        [HttpGet("{id:long}")]   
-        public Task<Customer> GetCustomerAsync([FromRoute] long id)
+        ICustomerService customerService;
+        public CustomerController(ICustomerService customerService)
         {
-            throw new NotImplementedException();
+            this.customerService = customerService;
         }
 
-        [HttpPost("")]   
+        [HttpGet("{id:long}")]
+        public Task<Customer> GetCustomerAsync([FromRoute] long id)
+        {
+            try
+            {
+                var customer = customerService.GetCustomerById(id);
+                return Task.FromResult(customer);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+
+        }
+
+        [HttpPost("")]
         public Task<long> CreateCustomerAsync([FromBody] Customer customer)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var id = customerService.AddCustomer(customer);
+                return Task.FromResult(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
         }
     }
 }
