@@ -5,8 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebApi.Infrastructure;
+using WebApi.Models;
+using WebApi.Services;
 
 namespace WebApi
 {
@@ -18,6 +22,11 @@ namespace WebApi
         {
             services.AddControllers();
             services.AddSwaggerGen();
+
+            services.AddDbContext<DBContext>(ServiceLifetime.Transient, ServiceLifetime.Transient);
+            services.AddTransient<IRepository<Customer>, SQLRepository>();
+            services.AddTransient<ICustomerService, CustomerService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
